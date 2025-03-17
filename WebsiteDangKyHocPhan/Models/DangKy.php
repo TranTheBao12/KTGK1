@@ -109,5 +109,29 @@ class DangKy {
 
         return true;
     }
+    public function save($MaSV) {
+        // Cập nhật trạng thái đăng ký trong bảng DangKy
+        $query = "UPDATE DangKy SET TrangThai = 'Đã Lưu' WHERE MaSV = :MaSV";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":MaSV", $MaSV);
+        return $stmt->execute();
+    }
+    
+    public function deleteAll($MaSV) {
+        // Xóa tất cả học phần trong ChiTietDangKy trước
+        $query = "DELETE ChiTietDangKy FROM ChiTietDangKy 
+                  JOIN DangKy ON ChiTietDangKy.MaDK = DangKy.MaDK
+                  WHERE DangKy.MaSV = :MaSV";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":MaSV", $MaSV);
+        $stmt->execute();
+    
+        // Xóa tất cả bản ghi trong bảng DangKy
+        $query = "DELETE FROM DangKy WHERE MaSV = :MaSV";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":MaSV", $MaSV);
+        return $stmt->execute();
+    }
+    
 }
 ?>
